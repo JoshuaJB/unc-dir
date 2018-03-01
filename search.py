@@ -1,8 +1,12 @@
 #!/usr/bin/python3
 import requests
+import sys
 
 SEARCH_URL = "https://itsapps.unc.edu/dir/dirSearch/search"
 DETAIL_URL= "https://itsapps.unc.edu/dir/dirSearch/details"
+DEBUG = False
+if len(sys.argv) > 1 and sys.argv[1] == "--debug":
+    DEBUG = True
 
 def createSearchResultStr(jsonRes):
     res = jsonRes["givenName"] + " " + jsonRes["sn"]
@@ -19,7 +23,20 @@ def createIDDisplayStr(idObj):
         res += "Email: " + idObj["mail"]
     if "telephoneNumber" in idObj:
         res += "\n"
-        res += "Telephone Number: " + idObj["telephoneNumber"]
+        res += "Work Phone: " + idObj["telephoneNumber"]
+    return res
+
+def createAcademicDisplayStr(acObj):
+    res = ""
+    if "uncPlan" in acObj:
+        res += "Major: " + acObj["uncPlan"]
+    if "uncAcademicGroup" in acObj:
+        res += "\n"
+        res += "School: " + acObj["uncAcademicGroup"]
+    if "uncProgram" in acObj:
+        res += "\n"
+        acObj["uncProgram"] = acObj["uncProgram"].replace("AS", "Arts and Sciences")
+        res += "Program: " + acObj["uncProgram"]
     return res
 
 def search(queryStr):
@@ -58,11 +75,17 @@ else:
     details = getDetails(results[int(input("Who do you want to get details on?: ")) - 1]["spid"])
 if details:
     print("=== Details: ===")
-    print(details)
+    if DEBUG:
+        print(details)
     # Find and print ID info
     for obj in details:
         if "organizationalPerson" in obj["objectClass"]:
             print(createIDDisplayStr(obj))
+            break
+    # Find and print academic info
+    for obj in details:
+        if "UNCStudentRecord" in obj["objectClass"]:
+            print(createAcademicDisplayStr(obj))
             break
     exit()
 else:

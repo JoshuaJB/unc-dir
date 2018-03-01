@@ -67,3 +67,4 @@ if details:
     exit()
 else:
     print("No results.")
+    exit()

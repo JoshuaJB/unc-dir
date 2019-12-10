@@ -9,3 +9,6 @@ Python 3 and the [requests library](http://docs.python-requests.org/en/master/).
 
 ## Usage
 `./search.py` and follow the prompts
+
+## Debug
+Use `--debug` to print the full details JSON blob.

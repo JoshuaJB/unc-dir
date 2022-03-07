@@ -12,7 +12,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--debug":
 def createSearchResultStr(jsonRes):
     res = jsonRes["givenNameIterator"][0] + " " + jsonRes["snIterator"][0]
     if "mailIterator" in jsonRes:
-        res += " (" + jsonRes["mailIterator"][0] + ")"
+        res += " <" + jsonRes["mailIterator"][0] + ">"
     if "telephoneNumberIterator" in jsonRes:
         res += " " + jsonRes["telephoneNumberIterator"][0]
     return res
@@ -47,7 +47,7 @@ def createAcademicDisplayStr(acObj):
 def createStaffDisplayStr(acObj):
     res = ""
     for job in acObj["uncJobs"]:
-        res += "Job: " + job["titleIterator"][0] + " - " + job["ouIterator"][0]
+        res += "Job: " + job["titleIterator"][0] + " - " + job["ouIterator"][0] + "\n"
     return res
 
 def search(queryStr):
@@ -94,7 +94,7 @@ if details:
     # Find and print staff info
     for key in details.keys():
         if key == "uncStaff":
-            print(createStaffDisplayStr(details[key]))
+            print(createStaffDisplayStr(details[key]), end = '')
             break
     # Find and print academic info
     for key in details.keys():
